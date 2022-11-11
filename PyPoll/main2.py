@@ -54,7 +54,7 @@ print(output)
 
 max = 0
 for key in new_cd:
-    print(key, ':' , newdict[key])
+    print(key, ':' , newdict[key][1], ',(', newdict[key][0],')') 
     if candidates_Percentage[key]>max:
         max = candidates_Percentage[key]
         winner = key
