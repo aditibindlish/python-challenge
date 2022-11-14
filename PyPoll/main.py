@@ -4,13 +4,12 @@ import csv
 # Path to collect data from the Resources folder
 csv_path = "Resources/election_data.csv"
 
-# Open/create an output file and store it in my_report under Analysis folder
-my_report = open('Analysis/Election_Result.txt', 'w')
+
 
 # inialise variables used
 total_votes = 0         # to store total votes casted 
-candidates = set()    # to store unique candidate names in a set   
-
+candidates = {}         # to store candidate names as keys and vote count as values of the key in the dictionary  
+candidates_Percentage = {} # to store candidate names as keys and percentage votes as values of the key
 
 # Open the source file in read mode and store it in csvfile and then read this file on commas
 with open(csv_path,'r') as csvfile:
@@ -19,60 +18,67 @@ with open(csv_path,'r') as csvfile:
 # iterate to the next row
     next(csvreader)
 
-#loop through the data row wise and refer to each row under variable with same name    
+#loop through the data row wise and.....     
     for row in csvreader:
         total_votes += 1        #calculate total votes counted
-        candidates.add(row[2])  #add each new candidate as an element in the set
-    print(candidates)           #print list of candidates as a set
-
-
-
-## routine for vote Count
-
-# Open the source file in read mode and store it in csvfile and then read this file on commas
-with open(csv_path,'r') as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=",")
-    
-# iterate to the next row
-    next(csvreader)
-
-    # Initialize a dictionary to store names against vote counts, dictionary has default values zero and keys from the set candidates
-    vote_count = {candidate: 0 for candidate in candidates}
-    print(vote_count)
-    candidates_list = list(vote_count.keys()) # store candidate names in a list to access each element using index of the list
-
-    #  Loop through the csv file and count each occurence of candidate name....
-    for row in csvreader:
         
-        if row[2] == candidates_list[0]:
-            vote_count[candidates_list[0]] += 1
-        
-        elif row[2] == candidates_list[1]:
-            vote_count[candidates_list[1]] +=1
-        
-        elif row[2] == candidates_list[2]:
-            vote_count[candidates_list[2]] +=1
+        if row[2] in candidates:
+            candidates[row[2]] +=1
+        else:
+            candidates[row[2]] =1
+    # print(candidates)    
 
+# extract value of dictionary, store it in new dictionary 
+
+candidates_Percentage = {}.fromkeys(candidates)
+
+new_cd=candidates_Percentage.keys()
+for key in new_cd:
+    candidates_Percentage[key]=round((candidates[key])*100/total_votes,3)
     
-    print(vote_count)
-    
+ 
+# to store candidate name as key in a newdict with values as votes and percentage votes
+newdict = {}
+for key in new_cd:
+    newdict[key] = [candidates[key],candidates_Percentage[key]]
+# print(f'new dict is {newdict}')
+# output3 = (f'''
+# {newdict}
+# ''')
 
-
-
-
-
-# create a readable output format
-output = f'''
+output1 = f'''
   Election Results
   -------------------------
   Total Votes: {total_votes}
+  -------------------------'''
+
+print(output1)  
+
+max = 0
+for key in new_cd:
+    print('    ', key, ':' , newdict[key][1],'%' ,',(', newdict[key][0],')') 
+    if candidates_Percentage[key]>max:
+        max = candidates_Percentage[key]
+        winner = key
+output2 =(f'''
   -------------------------
-  Charles Casper Stockham: 23.049% (85213)
-  Diana DeGette: 73.812% (272892)
-  Raymon Anthony Doane: 3.139% (11606)
+  Winner: {winner}
   -------------------------
-  Winner: Diana DeGette
-  -------------------------
-  '''
-print(output)
+''')
+print(output2)
+
+
+
+# Open/create an output file 'Election_Result.txt' and store it in variable my_report under Analysis folder
+
+my_report = open('Analysis/Election_Result.txt', 'w')
+
+# write the output in the Election_Result.txt file created above  
+
+my_report.write(output1)
+
+for k in newdict.keys():
+    my_report.write("\n %s: %s%% ,(%s) \n" % (k,newdict[k][1],(newdict[k][0])))
+
+my_report.write(output2)
 
