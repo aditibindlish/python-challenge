@@ -78,7 +78,7 @@ my_report = open('Analysis/Election_Result.txt', 'w')
 my_report.write(output1)
 
 for k in newdict.keys():
-    my_report.write("\n %s: %s%% ,(%s) \n" % (k,newdict[k][1],(newdict[k][0])))
+    my_report.write("\n %s: %s%% ,(%s) \n" % (k,newdict[k][1],newdict[k][0]))
 
 my_report.write(output2)
 
